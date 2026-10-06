@@ -1,0 +1,36 @@
+<?php
+require_once __DIR__ . '/../../backend/bootstrap.php';
+$root = str_repeat('../', $depth ?? 1);
+?>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title><?= e($pageTitle ?? 'Хвост и Лапы') ?></title>
+<link rel="stylesheet" href="<?= $root ?>frontend/assets/css/style.css">
+<script src="<?= $root ?>frontend/assets/js/app.js" defer></script>
+</head>
+<body>
+<header class="site-header">
+<div class="container header-inner">
+<a class="logo" href="<?= $root ?>index.php">Хвост и Лапы</a>
+<nav class="nav">
+<?php if (auth()->isAdmin()): ?>
+<a href="<?= $root ?>frontend/admin.php">Панель администратора</a>
+<a href="<?= $root ?>backend/actions/logout.php">Выйти</a>
+<?php elseif (auth()->check()): ?>
+<a href="<?= $root ?>frontend/applications.php">Мои записи</a>
+<a href="<?= $root ?>frontend/application_create.php">Записаться</a>
+<a href="<?= $root ?>backend/actions/logout.php">Выйти</a>
+<?php else: ?>
+<a href="<?= $root ?>frontend/login.php">Вход</a>
+<a href="<?= $root ?>frontend/register.php">Регистрация</a>
+<?php endif; ?>
+</nav>
+</div>
+</header>
+<main class="container">
+<?php foreach (get_flashes() as $item): ?>
+<div class="flash flash-<?= e($item['type']) ?>"><?= e($item['message']) ?></div>
+<?php endforeach; ?>
