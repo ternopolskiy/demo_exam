@@ -35,9 +35,51 @@ require __DIR__ . '/partials/header.php';
 </div>
 <?php else: ?>
 <h1 class="page-title">Панель администратора</h1>
-<?php $applications = Application::all(); ?>
+<?php
+$filters = [
+    'status' => trim($_GET['status'] ?? ''),
+    'service' => trim($_GET['service'] ?? ''),
+    'search' => trim($_GET['q'] ?? ''),
+];
+$perPage = 5;
+$total = Application::countAll($filters);
+$pages = max(1, (int)ceil($total / $perPage));
+$page = min(max(1, (int)($_GET['page'] ?? 1)), $pages);
+$applications = Application::all($filters, $page, $perPage);
+$allStatuses = array_keys(Application::TRANSITIONS);
+$services = Application::services();
+$adminPageUrl = function (int $targetPage, array $filters): string {
+    $params = array_filter([
+        'status' => $filters['status'],
+        'service' => $filters['service'],
+        'q' => $filters['search'],
+        'page' => $targetPage,
+    ]);
+    return '../frontend/admin.php' . ($params ? '?' . http_build_query($params) : '');
+};
+?>
+<form method="get" action="../frontend/admin.php" class="filter-form">
+<div class="filter-row">
+<select name="status" class="filter-input">
+<option value="">Все статусы</option>
+<?php foreach ($allStatuses as $option): ?>
+<option value="<?= e($option) ?>"<?= $filters['status'] === $option ? ' selected' : '' ?>><?= e($option) ?></option>
+<?php endforeach; ?>
+</select>
+<select name="service" class="filter-input">
+<option value="">Все услуги</option>
+<?php foreach ($services as $option): ?>
+<option value="<?= e($option) ?>"<?= $filters['service'] === $option ? ' selected' : '' ?>><?= e($option) ?></option>
+<?php endforeach; ?>
+</select>
+<input type="text" name="q" class="filter-input" placeholder="Кличка или ФИО владельца" value="<?= e($filters['search']) ?>">
+<button type="submit" class="btn">Найти</button>
+<a class="btn btn-outline" href="../frontend/admin.php">Сброс</a>
+</div>
+</form>
+<p class="results-count">Найдено заявок: <?= $total ?></p>
 <?php if (!$applications): ?>
-<div class="card empty-state"><p>Заявок пока нет.</p></div>
+<div class="card empty-state"><p>Заявок не найдено.</p></div>
 <?php else: ?>
 <div class="app-list">
 <?php foreach ($applications as $application): ?>
@@ -70,6 +112,17 @@ require __DIR__ . '/partials/header.php';
 </article>
 <?php endforeach; ?>
 </div>
+<?php if ($pages > 1): ?>
+<nav class="pagination">
+<?php if ($page > 1): ?>
+<a class="page-link" href="<?= e($adminPageUrl($page - 1, $filters)) ?>">‹ Назад</a>
+<?php endif; ?>
+<span class="page-current">Стр. <?= $page ?> из <?= $pages ?></span>
+<?php if ($page < $pages): ?>
+<a class="page-link" href="<?= e($adminPageUrl($page + 1, $filters)) ?>">Вперёд ›</a>
+<?php endif; ?>
+</nav>
+<?php endif; ?>
 <?php endif; ?>
 <?php endif; ?>
 <?php require __DIR__ . '/partials/footer.php'; ?>

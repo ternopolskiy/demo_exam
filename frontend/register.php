@@ -33,7 +33,7 @@ require __DIR__ . '/partials/header.php';
 <input type="text" id="email" name="email" value="<?= e(old('email')) ?>" placeholder="mail@example.ru">
 <?php if (isset($errors['email'])): ?><div class="error-text"><?= e($errors['email']) ?></div><?php endif; ?>
 </div>
-<button type="submit" class="btn btn-block">Создать пользователя</button>
+<button type="submit" class="btn btn-block">Зарегистрироваться</button>
 </form>
 <p class="alt-link">Уже зарегистрированы? <a href="../frontend/login.php">Вход</a></p>
 </div>

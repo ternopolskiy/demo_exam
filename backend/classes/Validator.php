@@ -69,6 +69,32 @@ class Validator
         return null;
     }
 
+    public static function date(string $value): ?string
+    {
+        if (trim($value) === '') {
+            return 'Дата обязательна для заполнения';
+        }
+        if (!preg_match('/^\d{2}\.\d{2}\.\d{4}$/', $value)) {
+            return 'Дата в формате ДД.ММ.ГГГГ';
+        }
+        $date = DateTime::createFromFormat('d.m.Y', $value);
+        if ($date === false || $date->format('d.m.Y') !== $value) {
+            return 'Некорректная дата';
+        }
+        return null;
+    }
+
+    public static function time(string $value): ?string
+    {
+        if (trim($value) === '') {
+            return 'Время обязательно для заполнения';
+        }
+        if (!preg_match('/^([01]\d|2[0-3]):[0-5]\d$/', $value)) {
+            return 'Время в формате ЧЧ:ММ';
+        }
+        return null;
+    }
+
     public static function email(string $value): ?string
     {
         if (trim($value) === '') {

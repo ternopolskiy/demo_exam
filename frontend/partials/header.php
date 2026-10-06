@@ -30,7 +30,12 @@ $root = str_repeat('../', $depth ?? 1);
 </nav>
 </div>
 </header>
-<main class="container">
-<?php foreach (get_flashes() as $item): ?>
-<div class="flash flash-<?= e($item['type']) ?>"><?= e($item['message']) ?></div>
+<?php $flashes = get_flashes(); ?>
+<?php if ($flashes): ?>
+<div id="toasts">
+<?php foreach ($flashes as $item): ?>
+<div class="toast toast-<?= e($item['type']) ?>"><?= e($item['message']) ?></div>
 <?php endforeach; ?>
+</div>
+<?php endif; ?>
+<main class="container">

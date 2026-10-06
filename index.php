@@ -4,6 +4,17 @@ $depth = 0;
 $pageTitle = 'Хвост и Лапы — запись к ветеринару';
 require __DIR__ . '/frontend/partials/header.php';
 ?>
+<section class="slider" id="slider">
+<div class="slider-track">
+<div class="slide active"><img src="frontend/assets/img/1.jpg" alt="Ветеринарная клиника «Хвост и Лапы»"></div>
+<div class="slide"><img src="frontend/assets/img/2.jpg" alt="Ветеринарная клиника «Хвост и Лапы»"></div>
+<div class="slide"><img src="frontend/assets/img/3.jpg" alt="Ветеринарная клиника «Хвост и Лапы»"></div>
+<div class="slide"><img src="frontend/assets/img/4.jpg" alt="Ветеринарная клиника «Хвост и Лапы»"></div>
+</div>
+<button type="button" class="slider-btn slider-prev" aria-label="Предыдущее изображение">‹</button>
+<button type="button" class="slider-btn slider-next" aria-label="Следующее изображение">›</button>
+<div class="slider-dots"></div>
+</section>
 <section class="hero">
 <h1>Ветеринарная клиника «Хвост и Лапы»</h1>
 <p>Онлайн-запись на приём: выберите услугу, дату и время — мы подтвердим заявку.</p>

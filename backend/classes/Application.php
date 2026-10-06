@@ -14,6 +14,10 @@ class Application
         self::STATUS_CANCELLED => [],
     ];
 
+    public const SPECIES = ['кошка', 'собака', 'грызун', 'птица', 'другое'];
+
+    public const SERVICES = ['первичный осмотр', 'вакцинация', 'стрижка когтей', 'УЗИ'];
+
     public static function create(array $data): int
     {
         db()->query(
@@ -45,14 +49,64 @@ class Application
         );
     }
 
-    public static function all(): array
+    private static function filtersWhere(array $filters): array
     {
-        return db()->fetchAll(
-            'SELECT a.*, u.full_name, u.login
-             FROM applications a
-             JOIN users u ON u.id = a.user_id
-             ORDER BY a.id DESC'
-        );
+        $where = [];
+        $params = [];
+
+        if (!empty($filters['status'])) {
+            $where[] = 'a.status = ?';
+            $params[] = $filters['status'];
+        }
+        if (!empty($filters['service'])) {
+            $where[] = 'a.service = ?';
+            $params[] = $filters['service'];
+        }
+        if (!empty($filters['search'])) {
+            $where[] = '(a.pet_name LIKE ? OR u.full_name LIKE ?)';
+            $like = '%' . $filters['search'] . '%';
+            $params[] = $like;
+            $params[] = $like;
+        }
+
+        return [$where, $params];
+    }
+
+    public static function all(array $filters = [], int $page = 1, int $perPage = 5): array
+    {
+        [$where, $params] = self::filtersWhere($filters);
+        $offset = ($page - 1) * $perPage;
+
+        $sql = 'SELECT a.*, u.full_name, u.login
+                FROM applications a
+                JOIN users u ON u.id = a.user_id';
+        if ($where) {
+            $sql .= ' WHERE ' . implode(' AND ', $where);
+        }
+        $sql .= ' ORDER BY a.id DESC LIMIT ' . $perPage . ' OFFSET ' . $offset;
+
+        return db()->fetchAll($sql, $params);
+    }
+
+    public static function countAll(array $filters = []): int
+    {
+        [$where, $params] = self::filtersWhere($filters);
+
+        $sql = 'SELECT COUNT(*) AS c
+                FROM applications a
+                JOIN users u ON u.id = a.user_id';
+        if ($where) {
+            $sql .= ' WHERE ' . implode(' AND ', $where);
+        }
+
+        $row = db()->fetchOne($sql, $params);
+        return (int)($row['c'] ?? 0);
+    }
+
+    public static function services(): array
+    {
+        $rows = db()->fetchAll('SELECT DISTINCT service FROM applications ORDER BY service');
+        return array_column($rows, 'service');
     }
 
     public static function canTransition(string $from, string $to): bool

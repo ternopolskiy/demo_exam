@@ -22,6 +22,11 @@ if (Review::forApplication($applicationId) !== null) {
     redirect('../../frontend/applications.php');
 }
 
+if ($application['status'] !== Application::STATUS_COMPLETED) {
+    flash('error', 'Отзыв можно оставить только после завершения приёма.');
+    redirect('../../frontend/applications.php');
+}
+
 $errors = [];
 if ($error = Validator::required($text, 'Отзыв')) {
     $errors['text'] = $error;

@@ -42,7 +42,7 @@ require __DIR__ . '/partials/header.php';
 <div class="review-label">Ваш отзыв</div>
 <p><?= e($review['text']) ?></p>
 </div>
-<?php else: ?>
+<?php elseif ($application['status'] === Application::STATUS_COMPLETED): ?>
 <form method="post" action="../backend/actions/review_create.php" class="form review-form">
 <input type="hidden" name="application_id" value="<?= (int)$application['id'] ?>">
 <div class="field">
@@ -51,6 +51,8 @@ require __DIR__ . '/partials/header.php';
 </div>
 <button type="submit" class="btn btn-small">Оставить отзыв</button>
 </form>
+<?php else: ?>
+<p class="review-wait">Отзыв можно будет оставить после завершения приёма.</p>
 <?php endif; ?>
 </article>
 <?php endforeach; ?>

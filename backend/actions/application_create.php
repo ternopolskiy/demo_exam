@@ -21,14 +21,18 @@ if ($error = Validator::required($petName, 'Кличка питомца')) {
 }
 if ($error = Validator::required($species, 'Вид животного')) {
     $errors['species'] = $error;
+} elseif (!in_array($species, Application::SPECIES, true)) {
+    $errors['species'] = 'Выберите вид животного из списка';
 }
 if ($error = Validator::required($service, 'Услуга')) {
     $errors['service'] = $error;
+} elseif (!in_array($service, Application::SERVICES, true)) {
+    $errors['service'] = 'Выберите услугу из списка';
 }
-if ($error = Validator::required($date, 'Дата приёма')) {
+if ($error = Validator::date($date)) {
     $errors['date'] = $error;
 }
-if ($error = Validator::required($time, 'Время приёма')) {
+if ($error = Validator::time($time)) {
     $errors['time'] = $error;
 }
 if (!in_array($paymentMethod, ['Наличными', 'Картой в клинике'], true)) {

@@ -21,12 +21,22 @@ require __DIR__ . '/partials/header.php';
 </div>
 <div class="field<?= isset($errors['species']) ? ' has-error' : '' ?>">
 <label for="species">Вид животного</label>
-<input type="text" id="species" name="species" value="<?= e(old('species')) ?>">
+<select id="species" name="species">
+<option value="">Выберите вид животного</option>
+<?php foreach (Application::SPECIES as $option): ?>
+<option value="<?= e($option) ?>"<?= old('species') === $option ? ' selected' : '' ?>><?= e($option) ?></option>
+<?php endforeach; ?>
+</select>
 <?php if (isset($errors['species'])): ?><div class="error-text"><?= e($errors['species']) ?></div><?php endif; ?>
 </div>
 <div class="field<?= isset($errors['service']) ? ' has-error' : '' ?>">
 <label for="service">Услуга</label>
-<input type="text" id="service" name="service" value="<?= e(old('service')) ?>">
+<select id="service" name="service">
+<option value="">Выберите услугу</option>
+<?php foreach (Application::SERVICES as $option): ?>
+<option value="<?= e($option) ?>"<?= old('service') === $option ? ' selected' : '' ?>><?= e($option) ?></option>
+<?php endforeach; ?>
+</select>
 <?php if (isset($errors['service'])): ?><div class="error-text"><?= e($errors['service']) ?></div><?php endif; ?>
 </div>
 <div class="field-row">
