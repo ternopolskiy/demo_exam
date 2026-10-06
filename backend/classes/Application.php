@@ -14,16 +14,14 @@ class Application
         self::STATUS_CANCELLED => [],
     ];
 
-    public const SPECIES = ['кошка', 'собака', 'грызун', 'птица', 'другое'];
-
     public const SERVICES = ['первичный осмотр', 'вакцинация', 'стрижка когтей', 'УЗИ'];
-
     public static function create(array $data): int
     {
         db()->query(
-            'INSERT INTO applications (user_id, pet_name, species, service, date, time, payment_method, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO applications (user_id, pet_id, pet_name, species, service, date, time, payment_method, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
             [
                 $data['user_id'],
+                $data['pet_id'],
                 $data['pet_name'],
                 $data['species'],
                 $data['service'],
@@ -124,6 +122,19 @@ class Application
             return false;
         }
         db()->query('UPDATE applications SET status = ? WHERE id = ?', [$status, $id]);
+        return true;
+    }
+
+    public static function cancelByUser(int $id, int $userId): bool
+    {
+        $application = self::find($id);
+        if ($application === null) {
+            return false;
+        }
+        if ((int)$application['user_id'] !== $userId || $application['status'] !== self::STATUS_NEW) {
+            return false;
+        }
+        db()->query('UPDATE applications SET status = ? WHERE id = ?', [self::STATUS_CANCELLED, $id]);
         return true;
     }
 

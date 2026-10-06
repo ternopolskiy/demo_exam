@@ -516,13 +516,13 @@ main.container {
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
     font-size: 15px;
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateX(24px);
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .toast.show {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(0);
 }
 
 .toast-success {
@@ -679,5 +679,197 @@ main.container {
         right: 16px;
         left: 16px;
         width: auto;
+    }
+}
+
+.card {
+    min-width: 0;
+}
+
+.card h2 {
+    font-size: 17px;
+    margin: 0 0 12px;
+}
+
+.empty-text {
+    margin: 0 0 14px;
+    color: #888;
+    font-size: 15px;
+}
+
+.cancel-form {
+    margin-top: 12px;
+}
+
+.btn-cancel {
+    color: #c0392b;
+    border-color: #c0392b;
+    background: #fff;
+}
+
+.btn-cancel:hover {
+    background: #fdeeec;
+    color: #a93226;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.pet-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.pet-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 15px;
+}
+
+.pet-item:last-child {
+    border-bottom: none;
+}
+
+.pet-species {
+    color: #666;
+}
+
+.detail dd {
+    overflow-wrap: anywhere;
+}
+
+@keyframes cardIn {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.app-card {
+    animation: cardIn 0.45s ease both;
+}
+
+.app-list .app-card:nth-child(1) {
+    animation-delay: 0.04s;
+}
+
+.app-list .app-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.app-list .app-card:nth-child(3) {
+    animation-delay: 0.16s;
+}
+
+.app-list .app-card:nth-child(4) {
+    animation-delay: 0.22s;
+}
+
+.app-list .app-card:nth-child(5) {
+    animation-delay: 0.28s;
+}
+
+.app-list .app-card:nth-child(6) {
+    animation-delay: 0.34s;
+}
+
+@keyframes cardPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(42, 111, 78, 0.45);
+    }
+    100% {
+        box-shadow: 0 0 0 16px rgba(42, 111, 78, 0);
+    }
+}
+
+.card-updated {
+    border-color: #2a6f4e;
+    animation: cardPulse 1s ease-out 2;
+}
+
+@keyframes statusPop {
+    0% {
+        transform: scale(0.7);
+    }
+    60% {
+        transform: scale(1.12);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.card-updated .status {
+    animation: statusPop 0.5s ease both 0.2s;
+}
+
+@keyframes shake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-4px);
+    }
+    75% {
+        transform: translateX(4px);
+    }
+}
+
+.field.has-error input,
+.field.has-error select,
+.field.has-error textarea {
+    animation: shake 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: none;
+}
+
+.btn:focus-visible {
+    outline: 2px solid rgba(42, 111, 78, 0.45);
+    outline-offset: 2px;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+    box-shadow: 0 0 0 3px rgba(42, 111, 78, 0.15);
+}
+
+.nav a {
+    transition: color 0.2s ease;
+}
+
+@media (max-width: 768px) {
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }

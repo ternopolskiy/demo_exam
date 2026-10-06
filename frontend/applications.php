@@ -37,6 +37,12 @@ require __DIR__ . '/partials/header.php';
 <div class="detail"><dt>Время</dt><dd><?= e($application['time']) ?></dd></div>
 <div class="detail"><dt>Оплата</dt><dd><?= e($application['payment_method']) ?></dd></div>
 </dl>
+<?php if ($application['status'] === Application::STATUS_NEW): ?>
+<form method="post" action="../backend/actions/application_cancel.php" class="cancel-form">
+<input type="hidden" name="application_id" value="<?= (int)$application['id'] ?>">
+<button type="submit" class="btn btn-small btn-cancel">Отменить заявку</button>
+</form>
+<?php endif; ?>
 <?php if ($review): ?>
 <div class="review">
 <div class="review-label">Ваш отзыв</div>

@@ -48,6 +48,7 @@ $page = min(max(1, (int)($_GET['page'] ?? 1)), $pages);
 $applications = Application::all($filters, $page, $perPage);
 $allStatuses = array_keys(Application::TRANSITIONS);
 $services = Application::services();
+$updatedId = (int)($_GET['updated'] ?? 0);
 $adminPageUrl = function (int $targetPage, array $filters): string {
     $params = array_filter([
         'status' => $filters['status'],
@@ -83,7 +84,7 @@ $adminPageUrl = function (int $targetPage, array $filters): string {
 <?php else: ?>
 <div class="app-list">
 <?php foreach ($applications as $application): ?>
-<article class="card app-card admin-card" data-status="<?= e(Application::statusSlug($application['status'])) ?>">
+<article class="card app-card admin-card<?= $updatedId === (int)$application['id'] ? ' card-updated' : '' ?>" data-status="<?= e(Application::statusSlug($application['status'])) ?>">
 <div class="app-card-head">
 <h2><?= e($application['pet_name']) ?></h2>
 <span class="status status-<?= e(Application::statusSlug($application['status'])) ?>"><?= e($application['status']) ?></span>

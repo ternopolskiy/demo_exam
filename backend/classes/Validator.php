@@ -92,6 +92,9 @@ class Validator
         if (!preg_match('/^([01]\d|2[0-3]):[0-5]\d$/', $value)) {
             return 'Время в формате ЧЧ:ММ';
         }
+        if ($value < '09:00' || $value > '20:00') {
+            return 'Клиника работает с 09:00 до 20:00';
+        }
         return null;
     }
 

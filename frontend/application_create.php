@@ -9,25 +9,25 @@ if (!auth()->check()) {
 
 $errors = $_SESSION['errors'] ?? [];
 unset($_SESSION['errors']);
+$pets = Pet::forUser(auth()->id());
 require __DIR__ . '/partials/header.php';
 ?>
 <div class="card form-card">
 <h1>Запись на приём</h1>
+<?php if (!$pets): ?>
+<p class="empty-text">У вас пока нет питомцев. Добавьте питомца в профиле, чтобы записаться на приём.</p>
+<a class="btn" href="../frontend/profile.php">Добавить питомца</a>
+<?php else: ?>
 <form method="post" action="../backend/actions/application_create.php" class="form" novalidate>
-<div class="field<?= isset($errors['pet_name']) ? ' has-error' : '' ?>">
-<label for="pet_name">Кличка питомца</label>
-<input type="text" id="pet_name" name="pet_name" value="<?= e(old('pet_name')) ?>">
-<?php if (isset($errors['pet_name'])): ?><div class="error-text"><?= e($errors['pet_name']) ?></div><?php endif; ?>
-</div>
-<div class="field<?= isset($errors['species']) ? ' has-error' : '' ?>">
-<label for="species">Вид животного</label>
-<select id="species" name="species">
-<option value="">Выберите вид животного</option>
-<?php foreach (Application::SPECIES as $option): ?>
-<option value="<?= e($option) ?>"<?= old('species') === $option ? ' selected' : '' ?>><?= e($option) ?></option>
+<div class="field<?= isset($errors['pet_id']) ? ' has-error' : '' ?>">
+<label for="pet_id">Питомец</label>
+<select id="pet_id" name="pet_id">
+<option value="">Выберите питомца</option>
+<?php foreach ($pets as $pet): ?>
+<option value="<?= (int)$pet['id'] ?>"<?= (string)old('pet_id') === (string)$pet['id'] ? ' selected' : '' ?>><?= e($pet['name']) ?> — <?= e($pet['species']) ?></option>
 <?php endforeach; ?>
 </select>
-<?php if (isset($errors['species'])): ?><div class="error-text"><?= e($errors['species']) ?></div><?php endif; ?>
+<?php if (isset($errors['pet_id'])): ?><div class="error-text"><?= e($errors['pet_id']) ?></div><?php endif; ?>
 </div>
 <div class="field<?= isset($errors['service']) ? ' has-error' : '' ?>">
 <label for="service">Услуга</label>
@@ -62,5 +62,6 @@ require __DIR__ . '/partials/header.php';
 </div>
 <button type="submit" class="btn btn-block">Записаться</button>
 </form>
+<?php endif; ?>
 </div>
 <?php require __DIR__ . '/partials/footer.php'; ?>

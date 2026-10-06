@@ -7,8 +7,7 @@ if (!auth()->check()) {
     redirect('../../frontend/login.php');
 }
 
-$petName = trim($_POST['pet_name'] ?? '');
-$species = trim($_POST['species'] ?? '');
+$petId = (int)($_POST['pet_id'] ?? 0);
 $service = trim($_POST['service'] ?? '');
 $date = trim($_POST['date'] ?? '');
 $time = trim($_POST['time'] ?? '');
@@ -16,13 +15,9 @@ $paymentMethod = trim($_POST['payment_method'] ?? '');
 
 $errors = [];
 
-if ($error = Validator::required($petName, 'Кличка питомца')) {
-    $errors['pet_name'] = $error;
-}
-if ($error = Validator::required($species, 'Вид животного')) {
-    $errors['species'] = $error;
-} elseif (!in_array($species, Application::SPECIES, true)) {
-    $errors['species'] = 'Выберите вид животного из списка';
+$pet = Pet::find($petId);
+if ($pet === null || (int)$pet['user_id'] !== auth()->id()) {
+    $errors['pet_id'] = 'Выберите питомца из списка';
 }
 if ($error = Validator::required($service, 'Услуга')) {
     $errors['service'] = $error;
@@ -41,14 +36,15 @@ if (!in_array($paymentMethod, ['Наличными', 'Картой в клини
 
 if ($errors) {
     $_SESSION['errors'] = $errors;
-    keep_old(['pet_name', 'species', 'service', 'date', 'time']);
+    keep_old(['pet_id', 'service', 'date', 'time', 'payment_method']);
     redirect('../../frontend/application_create.php');
 }
 
 Application::create([
     'user_id' => auth()->id(),
-    'pet_name' => $petName,
-    'species' => $species,
+    'pet_id' => $pet['id'],
+    'pet_name' => $pet['name'],
+    'species' => $pet['species'],
     'service' => $service,
     'date' => $date,
     'time' => $time,

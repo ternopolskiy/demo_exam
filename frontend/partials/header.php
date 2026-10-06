@@ -20,6 +20,7 @@ $root = str_repeat('../', $depth ?? 1);
 <a href="<?= $root ?>frontend/admin.php">Панель администратора</a>
 <a href="<?= $root ?>backend/actions/logout.php">Выйти</a>
 <?php elseif (auth()->check()): ?>
+<a href="<?= $root ?>frontend/profile.php">Профиль</a>
 <a href="<?= $root ?>frontend/applications.php">Мои записи</a>
 <a href="<?= $root ?>frontend/application_create.php">Записаться</a>
 <a href="<?= $root ?>backend/actions/logout.php">Выйти</a>

@@ -11,8 +11,8 @@ $status = (string)($_POST['status'] ?? '');
 
 if (!Application::updateStatus($applicationId, $status)) {
     flash('error', 'Недопустимый переход статуса.');
-} else {
-    flash('success', 'Статус заявки обновлён: ' . $status);
+    redirect('../../frontend/admin.php');
 }
 
-redirect('../../frontend/admin.php');
+flash('success', 'Статус заявки обновлён: ' . $status);
+redirect('../../frontend/admin.php?updated=' . $applicationId);

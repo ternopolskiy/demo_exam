@@ -30,6 +30,74 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
+    var form = document.querySelector('form[action*="application_create"]');
+    if (!form) {
+        return;
+    }
+
+    var dateInput = form.querySelector('input[name="date"]');
+    var timeInput = form.querySelector('input[name="time"]');
+
+    function setError(input, message) {
+        var field = input.closest('.field');
+        if (!field) {
+            return;
+        }
+        field.classList.toggle('has-error', !!message);
+        var box = field.querySelector('.error-text');
+        if (message) {
+            if (!box) {
+                box = document.createElement('div');
+                box.className = 'error-text';
+                field.appendChild(box);
+            }
+            box.textContent = message;
+        } else if (box) {
+            box.remove();
+        }
+    }
+
+    function validDate(value) {
+        var match = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec(value);
+        if (!match) {
+            return false;
+        }
+        var day = parseInt(match[1], 10);
+        var month = parseInt(match[2], 10);
+        var year = parseInt(match[3], 10);
+        var date = new Date(year, month - 1, day);
+        return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+    }
+
+    form.addEventListener('submit', function (event) {
+        var ok = true;
+
+        var date = dateInput.value.trim();
+        if (!validDate(date)) {
+            setError(dateInput, 'Дата в формате ДД.ММ.ГГГГ');
+            ok = false;
+        } else {
+            setError(dateInput, null);
+        }
+
+        var time = timeInput.value.trim();
+        if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) {
+            setError(timeInput, 'Время в формате ЧЧ:ММ');
+            ok = false;
+        } else if (time < '09:00' || time > '20:00') {
+            setError(timeInput, 'Клиника работает с 09:00 до 20:00');
+            ok = false;
+        } else {
+            setError(timeInput, null);
+        }
+
+        if (!ok) {
+            event.preventDefault();
+        }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('#toasts .toast').forEach(function (toast) {
         requestAnimationFrame(function () {
             toast.classList.add('show');

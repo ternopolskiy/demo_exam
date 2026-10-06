@@ -27,7 +27,6 @@ class Database
 
         if ($driver === 'sqlite') {
             $pdo = new PDO('sqlite:' . DB_SQLITE_PATH);
-            $this->initSqlite($pdo);
         } elseif ($driver === 'mysql') {
             $dsn = 'mysql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME . ';charset=utf8mb4';
             $pdo = new PDO($dsn, DB_USER, DB_PASS);
@@ -40,18 +39,32 @@ class Database
 
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+        if ($driver === 'sqlite') {
+            $pdo->exec('PRAGMA foreign_keys = ON');
+            $this->initSqlite($pdo);
+        }
+
         return $pdo;
     }
 
     private function initSqlite(PDO $pdo): void
     {
-        $exists = $pdo->query("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'users'")->fetch();
-        if ($exists) {
-            return;
-        }
         $dump = file_get_contents(__DIR__ . '/../database/dump.sql');
         if ($dump !== false && trim($dump) !== '') {
             $pdo->exec($dump);
+        }
+
+        $columns = $pdo->query('PRAGMA table_info(applications)')->fetchAll(PDO::FETCH_ASSOC);
+        $hasPetId = false;
+        foreach ($columns as $column) {
+            if ($column['name'] === 'pet_id') {
+                $hasPetId = true;
+                break;
+            }
+        }
+        if (!$hasPetId) {
+            $pdo->exec('ALTER TABLE applications ADD COLUMN pet_id INTEGER REFERENCES pets(id)');
         }
     }
 
